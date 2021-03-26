@@ -56,3 +56,18 @@ Now, you can simply call
 ssh lod
 ```
 and you're prompted for the password of the *rhel1* in the lab, which you can find in the lab guide. 
+
+## AWX in local browser
+Now that we have a working SSH tunnel for accessing the *rhel1* via terminal, we can also extend its functionality to enable http traffic over this tunnel to use the AWX UI also from your local machine.
+Append one line to file ```~/.ssh/config```:
+```
+Host lod
+  User root
+  ProxyCommand ssh -e none ubuntu@sshproxy exec nc localhost 2242
+  LocalForward 8052 localhost:80
+```
+This additional line opens port 8052 on your local machine to listen on port 80 on *rhel1* - which is actually the endpoint of the AWX UI. Run
+```
+ssh lod
+```
+again and open your browser at ```http://localhost:8052``` and you will see the login screen from AWX.
